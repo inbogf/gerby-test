@@ -1,47 +1,492 @@
 \documentclass{report}
-\usepackage{amssymb, amsmath, hyperref}
+\RequirePackage{luatex85}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,dsfont,mathrsfs,upgreek,tipa,bbm}
+\usepackage{enumitem}
+\usepackage{cancel}
 
-\theoremstyle{plain}
-\newtheorem{theorem}[subsection]{Theorem}
-\newtheorem{proposition}[subsection]{Proposition}
-\newtheorem{lemma}[subsection]{Lemma}
+\usepackage{arydshln}
+\usepackage{blkarray}
+
+%TikZ
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest, ticks=none}
+\usetikzlibrary{arrows,automata,positioning,graphs}
+\tikzset{My Style/.style={samples=100, thick}}
+\usetikzlibrary{cd}
+\addtolength{\oddsidemargin}{-.875in}
+\addtolength{\evensidemargin}{-.875in}
+\addtolength{\textwidth}{1.75in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1in}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+\usetikzlibrary{graphs.standard}
+\usepackage[most]{tcolorbox}
+
+%Systems of Equations
+\usepackage{systeme}
+
+%Mathcal and Mathboondox
+%\usepackage{eucal}
+\DeclareFontFamily{U}{BOONDOX-calo}{\skewchar\font=45 }
+\DeclareFontShape{U}{BOONDOX-calo}{m}{n}{
+  <-> s*[1.05] BOONDOX-r-calo}{}
+\DeclareFontShape{U}{BOONDOX-calo}{b}{n}{
+  <-> s*[1.05] BOONDOX-b-calo}{}
+\DeclareMathAlphabet{\mathcalboondox}{U}{BOONDOX-calo}{m}{n}
+\SetMathAlphabet{\mathcalboondox}{bold}{U}{BOONDOX-calo}{b}{n}
+\DeclareMathAlphabet{\mathbcalboondox}{U}{BOONDOX-calo}{b}{n}
+\newcommand{\kay}{\mathcalboondox{k}}
+
+%Configuration
+\usepackage{float}
+\usepackage{tensor}
+\usepackage{subfig}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{multicol}
+
+\numberwithin{equation}{section}
+
+%Theorem Environments
+
+\newtheorem{thm}{Theorem}[section]
 
 \theoremstyle{definition}
-\newtheorem{definition}[subsection]{Definition}
-\newtheorem{example}[subsection]{Example}
-\newtheorem{exercise}[subsection]{Exercise}
-\newtheorem{situation}[subsection]{Situation}
+\newtheorem{prob}{Problem}
 
 \theoremstyle{remark}
-\newtheorem{remark}[subsection]{Remark}
-\newtheorem{remarks}[subsection]{Remarks}
+%\newtheorem*{rmk}{Remark}
+\newtheorem*{sol}{Solution}
+%---------------------------
 
-\numberwithin{equation}{subsection}
+%Matrices
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+\makeatother
+%-------------------------
+
+\renewcommand{\thechapter}{\Roman{chapter}}
+\renewcommand{\thesection}{\arabic{section}}
+
+%Normal generated subgroup
+\makeatletter
+\newsavebox{\@brx}
+\newcommand{\llangle}[1][]{\savebox{\@brx}{\(\m@th{#1\langle}\)}%
+  \mathopen{\copy\@brx\kern-0.5\wd\@brx\usebox{\@brx}}}
+\newcommand{\rrangle}[1][]{\savebox{\@brx}{\(\m@th{#1\rangle}\)}%
+  \mathclose{\copy\@brx\kern-0.5\wd\@brx\usebox{\@brx}}}
+\makeatother
+\newcommand{\gen}[1]{\langle #1 \rangle}
+\newcommand{\ngen}[1]{\llangle #1 \rrangle}
+
+%Replacements for symbols
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\let\oldtau\tau
+\let\tau\uptau
+\let\oldepsilon\epsilon
+\let\epsilon\varepsilon
+\newcommand{\hook}{{\upharpoonright}}
+\renewcommand{\Re}{\mathrm{Re}\,}
+\renewcommand{\Im}{\mathrm{Im}\,}
+\newcommand{\qsim}{/{\sim}}
+
+%Algebra-----------------------------------------------------------------
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\Id}{Id}
+\DeclareMathOperator{\lcm}{lcm}
+\newcommand{\Zmod}[1]{\mathbb{Z}/#1\mathbb{Z}}
+
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\Sym}{Sym}
+\newcommand{\acts}{\curvearrowright}
+\DeclareMathOperator{\Stab}{Stab}
+\DeclareMathOperator{\Orb}{Orb}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand{\normal}{\trianglelefteq}
+\newcommand{\generated}[2]{\left\langle #1\, |\, #2 \right \rangle}
+\newcommand{\ngenerated}[2]{\left\llangle #1\, |\, #2 \right \rrangle}
+\DeclareMathOperator{\Syl}{Syl}
+\DeclareMathOperator{\Inn}{Inn}
+\DeclareMathOperator{\Out}{Out}
+\DeclareMathOperator{\characteristic}{char}
+
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\Coker}{Coker}
+\DeclareMathOperator{\cont}{cont}
+\DeclareMathOperator{\Spec}{Spec}
+\DeclareMathOperator{\Rees}{Rees}
+\DeclareMathOperator{\Tor}{Tor}
+\DeclareMathOperator{\Gr}{Gr}
+\DeclareMathOperator{\Ann}{Ann}
+\DeclareMathOperator{\Ass}{Ass}
+
+\newcommand{\inner}[2]{\left\langle #1,#2 \right\rangle}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\transpose}{T}
+\DeclareMathOperator{\Mat}{Mat}
+\DeclareMathOperator{\adj}{adj}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Trace}{Tr}
+
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Gal}{Gal}
+\DeclareMathOperator{\Frob}{Frob}
+\DeclareMathOperator{\disc}{disc}
+\DeclareMathOperator{\Norm}{N}
+\DeclareMathOperator{\trdeg}{tr.deg}
+\DeclareMathOperator{\ev}{ev}
+
+\DeclareMathOperator{\Matrix}{Mat}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\PGL}{PGL}
+\DeclareMathOperator{\gl}{\mathfrak{g}\mathfrak{l}}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\slinear}{\mathfrak{s}\mathfrak{l}}
+\DeclareMathOperator{\PSL}{PSL}
+\DeclareMathOperator{\Ortho}{O}
+\DeclareMathOperator{\Sortho}{SO}
+\DeclareMathOperator{\sortho}{\mathfrak{s}\mathfrak{o}}
+\DeclareMathOperator{\Unitary}{U}
+\DeclareMathOperator{\Sunitary}{SU}
+\DeclareMathOperator{\sunitary}{\mathfrak{s}\mathfrak{u}}
+%---------------------------------------
+
+%Categories
+\DeclareMathOperator{\Obj}{Obj}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\newcommand{\twoarrows}{\rightrightarrows}
+\newcommand{\Cat}[1]{\mathcalboondox{#1}}
+\DeclareMathOperator{\Set}{\mathcalboondox{S}\mkern-1.5mu \mathcalboondox{e}\mkern-1.5mu\mathcalboondox{t}}
+\DeclareMathOperator{\Grp}{\mathcalboondox{G}\mkern-1.5mu\mathcalboondox{r}\mkern-2mu\mathcalboondox{p}}
+\DeclareMathOperator{\Top}{\mathcalboondox{T}\mkern-4mu\mathcalboondox{o}\mkern-2.5mu\mathcalboondox{p}}
+\DeclareMathOperator{\Ab}{\mathcalboondox{A}\mkern-1.5mu\mathcalboondox{b}}
+\DeclareMathOperator{\Vect}{\mathcalboondox{V}\mkern-4mu\mathcalboondox{e}\mkern-1.5mu\mathcalboondox{c}\mkern-1.5mu\mathcalboondox{t}}
+\newcommand{\Moduleover}[1]{{#1}\text{-}\mathcalboondox{M}\mkern-1.5mu\mathcalboondox{o}\mkern-3mu\mathcalboondox{d}}
+\DeclareMathOperator{\Ring}{\mathcalboondox{R} \mkern-1.5mu \mathcalboondox{i} \mkern-3mu \mathcalboondox{n} \mkern-3mu \mathcalboondox{g}}
+\DeclareMathOperator{\Fld}{\mathcalboondox{F} \mkern-1.5mu \mathcalboondox{l} \mkern-3mu \mathcalboondox{d}}
+\DeclareMathOperator{\mono}{mono}
+\DeclareMathOperator{\epi}{epi}
+\newcommand{\rcong}{\mathbin{\rotatebox[origin=c]{270}{$\cong$}}}
+%-------------------------------------
+
+%Integration
+\newcommand{\dmu}{\, d \mu}
+\newcommand{\dnu}{\, d \nu}
+\newcommand{\dlambda}{\, d \lambda}
+\newcommand{\dxi}{\, d \xi}
+\newcommand{\dphi}{\, d\phi}
+\newcommand{\dm}{\, dm}
+\newcommand{\dr}{\, dr}
+\newcommand{\ds}{\, ds}
+\newcommand{\dt}{\, dt}
+\newcommand{\du}{\, du}
+\newcommand{\dx}{\, dx}
+\newcommand{\dy}{\, dy}
+\newcommand{\dg}{\, dg}
+\newcommand{\dcount}{\, d\#}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator*{\esssup}{ess\,sup}
+\newcommand{\del}{\partial}
+
+%Mathfrak
+\newcommand{\Afrak}{\mathfrak{A}}
+\newcommand{\Bfrak}{\mathfrak{B}}
+\newcommand{\Cfrak}{\mathfrak{C}}
+\newcommand{\Dfrak}{\mathfrak{D}}
+\newcommand{\Efrak}{\mathfrak{E}}
+\newcommand{\Ffrak}{\mathfrak{F}}
+\newcommand{\Gfrak}{\mathfrak{G}}
+\newcommand{\Hfrak}{\mathfrak{H}}
+\newcommand{\Ifrak}{\mathfrak{I}}
+\newcommand{\Jfrak}{\mathfrak{J}}
+\newcommand{\Kfrak}{\mathfrak{K}}
+\newcommand{\Lfrak}{\mathfrak{L}}
+\newcommand{\Mfrak}{\mathfrak{M}}
+\newcommand{\Nfrak}{\mathfrak{N}}
+\newcommand{\Ofrak}{\mathfrak{O}}
+\newcommand{\Pfrak}{\mathfrak{P}}
+\newcommand{\Qfrak}{\mathfrak{Q}}
+\newcommand{\Rfrak}{\mathfrak{R}}
+\newcommand{\Sfrak}{\mathfrak{S}}
+\newcommand{\Tfrak}{\mathfrak{T}}
+\newcommand{\Ufrak}{\mathfrak{U}}
+\newcommand{\Vfrak}{\mathfrak{V}}
+\newcommand{\Wfrak}{\mathfrak{W}}
+\newcommand{\Xfrak}{\mathfrak{X}}
+\newcommand{\Yfrak}{\mathfrak{Y}}
+\newcommand{\Zfrak}{\mathfrak{Z}}
+\newcommand{\afrak}{\mathfrak{a}}
+\newcommand{\bfrak}{\mathfrak{b}}
+\newcommand{\cfrak}{\mathfrak{c}}
+\newcommand{\dfrak}{\mathfrak{d}}
+\newcommand{\efrak}{\mathfrak{e}}
+\newcommand{\ffrak}{\mathfrak{f}}
+\newcommand{\gfrak}{\mathfrak{g}}
+\newcommand{\hfrak}{\mathfrak{h}}
+\newcommand{\ifrak}{\mathfrak{i}}
+\newcommand{\jfrak}{\mathfrak{j}}
+\newcommand{\kfrak}{\mathfrak{k}}
+\newcommand{\lfrak}{\mathfrak{l}}
+\newcommand{\mfrak}{\mathfrak{m}}
+\newcommand{\nfrak}{\mathfrak{n}}
+\newcommand{\ofrak}{\mathfrak{o}}
+\newcommand{\pfrak}{\mathfrak{p}}
+\newcommand{\qfrak}{\mathfrak{q}}
+\newcommand{\rfrak}{\mathfrak{r}}
+\newcommand{\sfrak}{\mathfrak{s}}
+\newcommand{\tfrak}{\mathfrak{t}}
+\newcommand{\ufrak}{\mathfrak{u}}
+\newcommand{\vfrak}{\mathfrak{v}}
+\newcommand{\wfrak}{\mathfrak{w}}
+\newcommand{\xfrak}{\mathfrak{x}}
+\newcommand{\yfrak}{\mathfrak{y}}
+\newcommand{\zfrak}{\mathfrak{z}}
+
+%Boldface
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\B}{\mathbb{B}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\G}{\mathbb{G}}
+\renewcommand{\H}{\mathbb{H}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\J}{\mathbb{J}}
+\newcommand{\K}{\mathbb{K}}
+\renewcommand{\L}{\mathbb{L}}
+\newcommand{\M}{\mathbb{M}}
+\newcommand{\N}{\mathbb{N}}
+\renewcommand{\O}{\mathbb{O}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\renewcommand{\S}{\mathbb{S}}
+\newcommand{\T}{\mathbb{T}}
+\newcommand{\U}{\mathbb{U}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\W}{\mathbb{W}}
+\newcommand{\X}{\mathbb{X}}
+\newcommand{\Y}{\mathbb{Y}}
+\newcommand{\Z}{\mathbb{Z}}
+
+%Script
+\newcommand{\As}{\mathscr{A}}
+\newcommand{\Bs}{\mathscr{B}}
+\newcommand{\Cs}{\mathscr{C}}
+\newcommand{\Ds}{\mathscr{D}}
+\newcommand{\Es}{\mathscr{E}}
+\newcommand{\Fs}{\mathscr{F}}
+\newcommand{\Gs}{\mathscr{G}}
+\newcommand{\Hs}{\mathscr{H}}
+\newcommand{\Is}{\mathscr{I}}
+\newcommand{\Js}{\mathscr{J}}
+\newcommand{\Ks}{\mathscr{K}}
+\newcommand{\Ls}{\mathscr{L}}
+\newcommand{\Ms}{\mathscr{M}}
+\newcommand{\Ns}{\mathscr{N}}
+\newcommand{\Os}{\mathscr{O}}
+\newcommand{\Ps}{\mathscr{P}}
+\newcommand{\Qs}{\mathscr{Q}}
+\newcommand{\Rs}{\mathscr{R}}
+\newcommand{\Ss}{\mathscr{S}}
+\newcommand{\Ts}{\mathscr{T}}
+\newcommand{\Us}{\mathscr{U}}
+\newcommand{\Vs}{\mathscr{V}}
+\newcommand{\Ws}{\mathscr{W}}
+\newcommand{\Xs}{\mathscr{X}}
+\newcommand{\Ys}{\mathscr{Y}}
+\newcommand{\Zs}{\mathscr{Z}}
+
+%Calligraphy
+\newcommand{\Ac}{\mathcal{A}}
+\newcommand{\Bc}{\mathcal{B}}
+\newcommand{\Cc}{\mathcal{C}}
+\newcommand{\Dc}{\mathcal{D}}
+\newcommand{\Ec}{\mathcal{E}}
+\newcommand{\Fc}{\mathcal{F}}
+\newcommand{\Gc}{\mathcal{G}}
+\newcommand{\Hc}{\mathcal{H}}
+\newcommand{\Ic}{\mathcal{I}}
+\newcommand{\Jc}{\mathcal{J}}
+\newcommand{\Kc}{\mathcal{K}}
+\newcommand{\Lc}{\mathcal{L}}
+\newcommand{\Mc}{\mathcal{M}}
+\newcommand{\Nc}{\mathcal{N}}
+\newcommand{\Oc}{\mathcal{O}}
+\newcommand{\Pc}{\mathcal{P}}
+\newcommand{\Qc}{\mathcal{Q}}
+\newcommand{\Rc}{\mathcal{R}}
+\newcommand{\Sc}{\mathcal{S}}
+\newcommand{\Tc}{\mathcal{T}}
+\newcommand{\Uc}{\mathcal{U}}
+\newcommand{\Vc}{\mathcal{V}}
+\newcommand{\Wc}{\mathcal{W}}
+\newcommand{\Xc}{\mathcal{X}}
+\newcommand{\Yc}{\mathcal{Y}}
+\newcommand{\Zc}{\mathcal{Z}}
+
+%Bold
+\newcommand{\Abf}{\mathbf{A}}
+\newcommand{\Bbf}{\mathbf{B}}
+\newcommand{\Cbf}{\mathbf{C}}
+\newcommand{\Dbf}{\mathbf{D}}
+\newcommand{\Ebf}{\mathbf{E}}
+\newcommand{\Fbf}{\mathbf{F}}
+\newcommand{\Gbf}{\mathbf{G}}
+\newcommand{\Hbf}{\mathbf{H}}
+\newcommand{\Ibf}{\mathbf{I}}
+\newcommand{\Jbf}{\mathbf{J}}
+\newcommand{\Kbf}{\mathbf{K}}
+\newcommand{\Lbf}{\mathbf{L}}
+\newcommand{\Mbf}{\mathbf{M}}
+\newcommand{\Nbf}{\mathbf{N}}
+\newcommand{\Obf}{\mathbf{O}}
+\newcommand{\Pbf}{\mathbf{P}}
+\newcommand{\Qbf}{\mathbf{Q}}
+\newcommand{\Rbf}{\mathbf{R}}
+\newcommand{\Sbf}{\mathbf{S}}
+\newcommand{\Tbf}{\mathbf{T}}
+\newcommand{\Ubf}{\mathbf{U}}
+\newcommand{\Vbf}{\mathbf{V}}
+\newcommand{\Wbf}{\mathbf{W}}
+\newcommand{\Xbf}{\mathbf{X}}
+\newcommand{\Ybf}{\mathbf{Y}}
+\newcommand{\Zbf}{\mathbf{Z}}
+\newcommand{\abf}{\mathbf{a}}
+\newcommand{\bbf}{\mathbf{b}}
+\newcommand{\cbf}{\mathbf{c}}
+\newcommand{\dbf}{\mathbf{d}}
+\newcommand{\ebf}{\mathbf{e}}
+\newcommand{\fbf}{\mathbf{f}}
+\newcommand{\gbf}{\mathbf{g}}
+\newcommand{\hbf}{\mathbf{h}}
+\newcommand{\ibf}{\mathbf{i}}
+\newcommand{\jbf}{\mathbf{j}}
+\newcommand{\kbf}{\mathbf{k}}
+\newcommand{\lbf}{\mathbf{l}}
+\newcommand{\mbf}{\mathbf{m}}
+\newcommand{\nbf}{\mathbf{n}}
+\newcommand{\obf}{\mathbf{o}}
+\newcommand{\pbf}{\mathbf{p}}
+\newcommand{\qbf}{\mathbf{q}}
+\newcommand{\rbf}{\mathbf{r}}
+\newcommand{\sbf}{\mathbf{s}}
+\newcommand{\tbf}{\mathbf{t}}
+\newcommand{\ubf}{\mathbf{u}}
+\newcommand{\vbf}{\mathbf{v}}
+\newcommand{\wbf}{\mathbf{w}}
+\newcommand{\xbf}{\mathbf{x}}
+\newcommand{\ybf}{\mathbf{y}}
+\newcommand{\zbf}{\mathbf{z}}
+
+%Document Specific
+\DeclareMathOperator{\Cyc}{Cyc}
+
+
+\title{Test}
+\author{Inbo Gottlieb-Fenves}
 
 \begin{document}
 
-\chapter{A first chapter}
-\label{chapter:first}
+\maketitle
 
-\section{A first section}
-\label{section:first}
+\section{PJMonkeyPJ}
+\label{section:pjmonkeypj}
 
-\begin{lemma}
-  \label{lemma:pythagoras}
-  $a^2=b^2+c^2$
-\end{lemma}
+\begin{equation*}
+    P(T,\phi) = \sup\left\{ h_\mu(T) + \int_X \phi \dmu : \mu \in \Ms(T)  \right\}
+\end{equation*}
+\label{eq:variationalprinciple}
 
-\section{A second section}
-\label{section:second}
+\begin{thm}
+    If $A$ is Noetherian, then $A[X]$ is Noetherian.
+\end{thm}
+\label{thm:hilbertbasis}
 
 
-\chapter{A second chapter}
-\label{chapter:second}
 
-\section{A third section}
-\label{section:third}
 
-\section{A fourth section}
-\label{section:fourth}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \end{document}
